@@ -11,8 +11,18 @@ import (
 // 	os.Exit(1)
 // }
 
-type HelloWorld interface {
-	HelloWorld()
+// type HelloWorld interface {
+// 	HelloWorld()
+// }
+
+// type helloWorld interface {
+// 	s string
+// 	HelloWorld() int
+// }
+
+type helloWorld struct {
+	s string
+	HelloWorld func()
 }
 
 func main() {
@@ -29,12 +39,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	var helloWorld HelloWorld
-	helloWorld, ok := symHelloWorld.(HelloWorld)
+	h := helloWorld{"hello there"}
+	h, ok := symHelloWorld.(HelloWorld)
 	if !ok {
 		fmt.Println("unexpected type from module")
 		os.Exit(1)
 	}
 
-	helloWorld.HelloWorld()
+	h.HelloWorld()
 }

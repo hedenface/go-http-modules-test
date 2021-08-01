@@ -2,10 +2,12 @@ package main
 
 import "fmt"
 
-type helloWorld string
+type helloWorld struct {
+	s string
+}
 
 func (h helloWorld) HelloWorld() {
-	fmt.Println("Hello World!")
+	fmt.Println(h.s)
 }
 
 var HelloWorld helloWorld

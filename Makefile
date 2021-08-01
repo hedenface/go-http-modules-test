@@ -2,7 +2,7 @@ all:
 	make main
 	make module
 
-run: all
+run: clean all
 	./helloWorld
 
 main:
@@ -10,3 +10,7 @@ main:
 
 module:
 	go build -buildmode=plugin -o module/module.so module/module.go
+
+clean:
+	rm helloWorld
+	rm module/module.so
