@@ -8,10 +8,14 @@ import (
 	"io"
 )
 
-// type helloWorld struct {
-// 	s string
-// 	HelloWorld func()
-// }
+type Hook string
+
+const (
+	BeforePrinting Hook = "BeforePrinting"
+	AfterPrinting Hook = "AfterPrinting"
+)
+
+var HookFuncs map[Hook][]func(Hook)
 
 func ReadConfig(config string) (syms []plugin.Symbol) {
 	file, err := os.Open(config)
@@ -51,13 +55,17 @@ func ReadConfig(config string) (syms []plugin.Symbol) {
 }
 
 func RegisterModules(syms []plugin.Symbol) {
-
 	for _, sym := range syms {
 		sym.(func())()
 	}
 }
 
+var createdHookFuncs = false
 
-func Hello() {
-	fmt.Println("testing calling server func from module")
+func RegisterCallback(hook Hook, hookFunc func(hook Hook)) {
+	if createdHookFuncs == false {
+		HookFuncs = make(map[Hook][]func(Hook))
+		createdHookFuncs = true
+	}
+	HookFuncs[hook] = append(HookFuncs[hook], hookFunc)
 }

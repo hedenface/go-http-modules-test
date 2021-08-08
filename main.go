@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	server "github.com/hedenface/go-http-modules-test/server"
 )
 
@@ -13,24 +14,16 @@ func main() {
 
 	server.RegisterModules(server.ReadConfig(config))
 
-	// mod, err := plugin.Open("./module/module.so")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
+	fmt.Println("Before printing:")
+	for _, hookFunc := range server.HookFuncs[server.BeforePrinting] {
+		hookFunc(server.BeforePrinting)
+	}
 
-	// symHelloWorld, err := mod.Lookup("HelloWorld")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
+	fmt.Println("Printing:")
+	fmt.Println("Hello!")
 
-	// h := helloWorld{"hello there"}
-	// h, ok := symHelloWorld.(HelloWorld)
-	// if !ok {
-	// 	fmt.Println("unexpected type from module")
-	// 	os.Exit(1)
-	// }
-
-	// h.HelloWorld()
+	fmt.Println("After printing:")
+	for _, hookFunc := range server.HookFuncs[server.AfterPrinting] {
+		hookFunc(server.AfterPrinting)
+	}
 }
