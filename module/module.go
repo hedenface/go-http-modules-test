@@ -1,11 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	server "github.com/hedenface/go-http-modules-test/server"
+)
 
-type helloWorld string
-
-func (h helloWorld) HelloWorld() {
-	fmt.Println("Hello World!")
+func Register() {
+	fmt.Println("hello")
+	server.Hello()
 }
-
-var HelloWorld helloWorld
