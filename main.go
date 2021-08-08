@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	server "github.com/hedenface/go-http-modules-test/server"
 )
 
@@ -14,16 +16,16 @@ func main() {
 
 	server.RegisterModules(server.ReadConfig(config))
 
-	fmt.Println("Before printing:")
-	for _, hookFunc := range server.HookFuncs[server.BeforePrinting] {
-		hookFunc(server.BeforePrinting)
+	http.HandleFunc("/", rootHandler)
+
+	for key, pathFunc := range server.PathFuncs {
+		path := fmt.Sprintf("%s", key)
+		http.HandleFunc(path, pathFunc)
 	}
 
-	fmt.Println("Printing:")
-	fmt.Println("Hello!")
+	log.Fatal(http.ListenAndServe(":9090", nil))
+}
 
-	fmt.Println("After printing:")
-	for _, hookFunc := range server.HookFuncs[server.AfterPrinting] {
-		hookFunc(server.AfterPrinting)
-	}
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Just servin from main over here...")
 }

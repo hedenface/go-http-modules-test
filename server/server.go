@@ -6,16 +6,12 @@ import (
 	"os"
 	"bufio"
 	"io"
+	"net/http"
 )
 
-type Hook string
+type Path string
 
-const (
-	BeforePrinting Hook = "BeforePrinting"
-	AfterPrinting Hook = "AfterPrinting"
-)
-
-var HookFuncs map[Hook][]func(Hook)
+var PathFuncs map[Path]func(http.ResponseWriter, *http.Request)
 
 func ReadConfig(config string) (syms []plugin.Symbol) {
 	file, err := os.Open(config)
@@ -60,12 +56,12 @@ func RegisterModules(syms []plugin.Symbol) {
 	}
 }
 
-var createdHookFuncs = false
+var createdPathFuncs = false
 
-func RegisterCallback(hook Hook, hookFunc func(hook Hook)) {
-	if createdHookFuncs == false {
-		HookFuncs = make(map[Hook][]func(Hook))
-		createdHookFuncs = true
+func RegisterCallback(path Path, pathFunc func(http.ResponseWriter, *http.Request)) {
+	if createdPathFuncs == false {
+		PathFuncs = make(map[Path]func(http.ResponseWriter, *http.Request))
+		createdPathFuncs = true
 	}
-	HookFuncs[hook] = append(HookFuncs[hook], hookFunc)
+	PathFuncs[path] = pathFunc
 }
