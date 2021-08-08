@@ -5,14 +5,16 @@ all:
 	make module
 
 run: clean all
-	./server/server -config config/server.cfg
+	./main -config config/server.cfg
 
 server:
 	go build -o server/server server/server.go
+	go build -o main main.go
 
 module:
 	go build -buildmode=plugin -o module/module.so module/module.go
 
 clean:
-	rm server/server
-	rm module/module.so
+	rm -f server/server
+	rm -f server/main
+	rm -f module/module.so

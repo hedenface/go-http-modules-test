@@ -1,9 +1,8 @@
-package main
+package server
 
 import (
 	"fmt"
 	"plugin"
-	"flag"
 	"os"
 	"bufio"
 	"io"
@@ -14,7 +13,7 @@ import (
 // 	HelloWorld func()
 // }
 
-func readConfig(config string) {
+func ReadConfig(config string) (syms []plugin.Symbol) {
 	file, err := os.Open(config)
 	if err != nil {
 		fmt.Println("Unable to open file:", config)
@@ -45,36 +44,20 @@ func readConfig(config string) {
 			os.Exit(1)			
 		}
 
-		symRegister.(func())()
+		syms = append(syms, symRegister)
+	}
+
+	return
+}
+
+func RegisterModules(syms []plugin.Symbol) {
+
+	for _, sym := range syms {
+		sym.(func())()
 	}
 }
 
-func main() {
 
-	var config string
-	flag.StringVar(&config, "config", "", "the location of the main config file")
-	flag.Parse()
-
-	readConfig(config)
-
-	// mod, err := plugin.Open("./module/module.so")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
-
-	// symHelloWorld, err := mod.Lookup("HelloWorld")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
-
-	// h := helloWorld{"hello there"}
-	// h, ok := symHelloWorld.(HelloWorld)
-	// if !ok {
-	// 	fmt.Println("unexpected type from module")
-	// 	os.Exit(1)
-	// }
-
-	// h.HelloWorld()
+func Hello() {
+	fmt.Println("testing calling server func from module")
 }
