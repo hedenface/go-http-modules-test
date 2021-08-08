@@ -2,6 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"log"
+	"net/http"
 	server "github.com/hedenface/go-http-modules-test/server"
 )
 
@@ -13,24 +16,16 @@ func main() {
 
 	server.RegisterModules(server.ReadConfig(config))
 
-	// mod, err := plugin.Open("./module/module.so")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
+	http.HandleFunc("/", rootHandler)
 
-	// symHelloWorld, err := mod.Lookup("HelloWorld")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
+	for key, pathFunc := range server.PathFuncs {
+		path := fmt.Sprintf("%s", key)
+		http.HandleFunc(path, pathFunc)
+	}
 
-	// h := helloWorld{"hello there"}
-	// h, ok := symHelloWorld.(HelloWorld)
-	// if !ok {
-	// 	fmt.Println("unexpected type from module")
-	// 	os.Exit(1)
-	// }
+	log.Fatal(http.ListenAndServe(":9090", nil))
+}
 
-	// h.HelloWorld()
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Just servin from main over here...")
 }

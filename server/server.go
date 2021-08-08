@@ -6,12 +6,12 @@ import (
 	"os"
 	"bufio"
 	"io"
+	"net/http"
 )
 
-// type helloWorld struct {
-// 	s string
-// 	HelloWorld func()
-// }
+type Path string
+
+var PathFuncs map[Path]func(http.ResponseWriter, *http.Request)
 
 func ReadConfig(config string) (syms []plugin.Symbol) {
 	file, err := os.Open(config)
@@ -51,13 +51,17 @@ func ReadConfig(config string) (syms []plugin.Symbol) {
 }
 
 func RegisterModules(syms []plugin.Symbol) {
-
 	for _, sym := range syms {
 		sym.(func())()
 	}
 }
 
+var createdPathFuncs = false
 
-func Hello() {
-	fmt.Println("testing calling server func from module")
+func RegisterCallback(path Path, pathFunc func(http.ResponseWriter, *http.Request)) {
+	if createdPathFuncs == false {
+		PathFuncs = make(map[Path]func(http.ResponseWriter, *http.Request))
+		createdPathFuncs = true
+	}
+	PathFuncs[path] = pathFunc
 }
