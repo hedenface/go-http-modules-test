@@ -2,12 +2,6 @@ package main
 
 import "fmt"
 
-type helloWorld struct {
-	s string
+func Register() {
+	fmt.Println("hello")
 }
-
-func (h helloWorld) HelloWorld() {
-	fmt.Println(h.s)
-}
-
-var HelloWorld helloWorld

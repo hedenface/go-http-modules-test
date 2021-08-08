@@ -1,16 +1,18 @@
+.PHONY: all clean server module run
+
 all:
-	make main
+	make server
 	make module
 
 run: clean all
-	./helloWorld
+	./server/server -config config/server.cfg
 
-main:
-	go build -o helloWorld main.go
+server:
+	go build -o server/server server/server.go
 
 module:
 	go build -buildmode=plugin -o module/module.so module/module.go
 
 clean:
-	rm helloWorld
+	rm server/server
 	rm module/module.so
